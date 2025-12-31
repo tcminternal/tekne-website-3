@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-[#FAFAFA]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekne Capital Management</title>
+    <meta name="description" content="Tekne Capital bridges the gap between present value and future utility. Global TMT and Digital Asset Investment.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        tekne: {
+                            bg: '#FAFAFA',       // Light background
+                            card: '#FFFFFF',     // White cards
+                            accent: '#FF7300',   // Electric Orange
+                            accentDark: '#CC5C00', 
+                            secondary: '#555555' // Dark Grey text for readability
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'radar': 'radar 3s ease-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        radar: {
+                            '0%': { transform: 'scale(1)', opacity: '0.6' },
+                            '100%': { transform: 'scale(2.5)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Scrollbar - Light Mode */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FAFAFA; }
+        ::-webkit-scrollbar-thumb { background: #CCC; border-radius: 4px; }
+
+        /* Animation Utilities */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Section Focus / Blur Effect */
+        .section-blur {
+            opacity: 0.1;
+            filter: blur(4px);
+            transition: opacity 1s ease-in-out, filter 1s ease-in-out;
+            will-change: opacity, filter;
+        }
+        
+        .section-blur.in-focus {
+            opacity: 1;
+            filter: blur(0px);
+        }
+
+        /* Glassmorphism Card - Light Mode */
+        .glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+        }
+        
+        /* Preloader Styles - Light Mode */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #FAFAFA;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        /* Mouse Follow Glow - Adjusted for Light Mode */
+        .glow-effect {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 115, 0, 0.15) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+            mix-blend-mode: multiply; 
+        }
+        
+        .glow-card:hover .glow-effect {
+            opacity: 1;
+        }
+
+        /* Map Blending Mask */
+        .map-mask {
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 95%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 95%);
+        }
+
+        /* DISCLAIMER MODAL STYLES */
+        #disclaimer-modal {
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+        }
+        #disclaimer-modal.hidden-modal {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #disclaimer-modal .modal-content {
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #disclaimer-modal.hidden-modal .modal-content {
+            transform: scale(0.95) translateY(20px);
+        }
+
+        /* Sidebar Navigation Active States */
+        .sidebar-link.active {
+            color: #000;
+            font-weight: 500;
+        }
+        
+        /* Smooth Scroll Padding */
+        html {
+            scroll-padding-top: 0px; 
+        }
+    </style>
+</head>
+<body class="bg-tekne-bg text-black selection:bg-tekne-accent selection:text-white relative overflow-x-hidden">
+
+    <div id="preloader">
+        <div class="font-mono text-xs md:text-sm tracking-widest text-tekne-accent">
+            BRINGING YOU TO TEKNE<span class="animate-pulse">...</span>
+        </div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center relative z-50">
+            <a href="#" class="relative z-50 group block">
+                <img src="tekne.png" alt="Tekne Capital" class="w-28 h-auto object-contain brightness-0">
+            </a>
+            <div class="hidden md:flex space-x-10 text-xs font-mono tracking-widest text-tekne-secondary">
+                <a href="#thesis" class="hover:text-tekne-accent transition-colors">OVERVIEW</a>
+                <a href="#strategy" class="hover:text-tekne-accent transition-colors">APPROACH</a>
+                <a href="#contact" class="hover:text-tekne-accent transition-colors">CONTACT</a>
+            </div>
+            <div class="hidden md:block">
+                <a href="#contact" class="px-6 py-2 border border-black/10 rounded-full text-xs font-mono hover:bg-black hover:text-white transition-all duration-300">
+                    INVESTOR LOGIN
+                </a>
+            </div>
+            <button class="md:hidden z-50 text-black" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="fixed inset-0 bg-tekne-bg z-40 flex flex-col justify-center items-center opacity-0 pointer-events-none transition-opacity duration-300">
+            <div class="flex flex-col space-y-8 text-center text-xl font-light">
+                <a href="#thesis" onclick="toggleMobileMenu()" class="hover:text-tekne-accent">The Thesis</a>
+                <a href="#strategy" onclick="toggleMobileMenu()" class="hover:text-tekne-accent">Strategy</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="hover:text-tekne-accent">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative min-h-screen flex flex-col justify-end items-start px-6 pt-20 pb-24 z-10 section-blur overflow-hidden" id="hero-section">
+    
+    <div class="absolute inset-0 z-0 flex items-center justify-center translate-y-[-15vh]">
+        <img src="background.png" alt="Hero Background" class="w-full h-auto object-cover object-center">
+    </div>
+
+    <canvas id="heroRippleCanvas" class="absolute inset-0 w-full h-full z-10 pointer-events-auto translate-y-[-15vh]"></canvas>
+
+    <div class="w-full max-w-7xl mx-auto text-left z-20 relative pointer-events-none">
+        <div class="reveal delay-100 font-mono text-tekne-accent text-xs mb-6 tracking-[0.2em] uppercase">
+            TEKNE CAPITAL
+        </div>
+        
+        <h1 class="reveal delay-200 text-5xl md:text-8xl lg:text-9xl font-medium tracking-tighter leading-none mb-8 bg-clip-text text-transparent bg-gradient-to-b from-black via-black to-gray-400">
+            Future.<br>Financed.
+        </h1>
+            
+            <p class="reveal delay-300 text-base md:text-xl text-tekne-secondary max-w-xl font-light leading-relaxed">
+                Investing in the future of technology across the world.
+            </p>
+
+            <div class="reveal delay-500 mt-16 flex flex-col items-start opacity-50">
+                 <span class="font-mono text-[10px] tracking-widest mb-4">SCROLL FOR DETAILS</span>
+                <div class="w-[1px] h-24 bg-gradient-to-b from-black/0 via-tekne-accent/50 to-black/0 animate-pulse ml-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <section id="thesis" class="py-32 px-6 relative z-10 section-blur scroll-mt-28">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-12 lg:gap-24">
+            
+            <div class="w-full lg:w-5/12 lg:sticky lg:top-32 self-start h-fit reveal">
+                <span class="font-mono text-tekne-accent text-xs tracking-widest">OVERVIEW</span>
+                <h2 class="text-4xl md:text-5xl font-light tracking-tight mb-8 mt-4">
+                    Track record of delivery. <br>
+                    <span class="text-tekne-secondary">Through multiple economic cycles.</span>
+                </h2>
+                <div class="space-y-6 text-tekne-secondary font-light leading-relaxed text-lg mb-12">
+                    <p>
+                        Tekne Capital is a global technology investment manager based in New York with a footprint across the Emerging Markets. We manage over USD$1 billion, and our investment focus is exclusively on tech-related businesses with a heavy tilt towards non-US markets in a concentrated portfolio with multi-year holding periods.
+                    </p>
+                </div>
+
+                <div class="hidden lg:flex flex-col relative border-l border-black/10 py-2">
+                    <div id="sidebar-indicator" class="absolute left-[-1.5px] top-2 w-[3px] h-6 bg-tekne-accent rounded-full transition-all duration-300 ease-out"></div>
+                    
+                    <a href="#content-interviews" class="sidebar-link pl-8 py-2 text-[10px] font-mono uppercase tracking-widest text-tekne-secondary/50 hover:text-black transition-colors duration-300" data-target="content-interviews">
+                        Featured Interviews
+                    </a>
+                    <a href="#content-press" class="sidebar-link pl-8 py-2 text-[10px] font-mono uppercase tracking-widest text-tekne-secondary/50 hover:text-black transition-colors duration-300" data-target="content-press">
+                        Recent Press
+                    </a>
+                    <a href="#content-thoughts" class="sidebar-link pl-8 py-2 text-[10px] font-mono uppercase tracking-widest text-tekne-secondary/50 hover:text-black transition-colors duration-300" data-target="content-thoughts">
+                        Our Thoughts
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-7/12 flex flex-col gap-16">
+                
+                <div id="content-interviews" class="scroll-target scroll-mt-[130px]">
+                    <span class="font-mono text-tekne-accent text-xs tracking-widest block mb-6">FEATURED INTERVIEWS</span>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                        
+                        <div class="reveal glass rounded-xl group overflow-hidden relative glow-card cursor-pointer flex flex-col aspect-[1/1]">
+                            <div class="glow-effect"></div>
+                            <div class="relative z-10 w-full aspect-video bg-black/10">
+                                <img src="https://img.youtube.com/vi/DXjPbZbgcvY/hqdefault.jpg" alt="Bull Case for Chinese Equities" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-500">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-tekne-accent/90 rounded-full flex items-center justify-center text-white shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300">
+                                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex-1 flex items-center p-4">
+                                <h3 class="text-black text-[10px] md:text-xs font-mono uppercase tracking-wide leading-tight group-hover:text-tekne-accent transition-colors line-clamp-3">
+                                    Tekne's Kothari shares his bull case for Chinese equities
+                                </h3>
+                            </div>
+                            <a href="https://www.youtube.com/watch?v=DXjPbZbgcvY&pp=ygUPYmVlbmVldCBrb3RoYXJp" target="_blank" class="absolute inset-0 z-20"></a>
+                        </div>
+
+                        <div class="reveal glass rounded-xl group overflow-hidden relative glow-card cursor-pointer flex flex-col aspect-[1/1]" style="transition-delay: 100ms">
+                            <div class="glow-effect"></div>
+                            <div class="relative z-10 w-full aspect-video bg-black/10">
+                                <img src="https://img.youtube.com/vi/2zdv5LvMLR0/hqdefault.jpg" alt="Prospects for Investing in China" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-500">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-tekne-accent/90 rounded-full flex items-center justify-center text-white shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300">
+                                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex-1 flex items-center p-4">
+                                <h3 class="text-black text-[10px] md:text-xs font-mono uppercase tracking-wide leading-tight group-hover:text-tekne-accent transition-colors line-clamp-3">
+                                    Prospects for investing in China
+                                </h3>
+                            </div>
+                            <a href="https://www.youtube.com/watch?v=2zdv5LvMLR0&t=51s&pp=ygUPYmVlbmVldCBrb3RoYXJp" target="_blank" class="absolute inset-0 z-20"></a>
+                        </div>
+
+                        <div class="reveal glass rounded-xl group overflow-hidden relative glow-card cursor-pointer flex flex-col aspect-[1/1]" style="transition-delay: 200ms">
+                            <div class="glow-effect"></div>
+                            <div class="relative z-10 w-full aspect-video bg-black/10">
+                                <img src="https://img.youtube.com/vi/oQ4wXzFB8zg/hqdefault.jpg" alt="Chinese Tech Stocks Outperform" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-500">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-tekne-accent/90 rounded-full flex items-center justify-center text-white shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300">
+                                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex-1 flex items-center p-4">
+                                <h3 class="text-black text-[10px] md:text-xs font-mono uppercase tracking-wide leading-tight group-hover:text-tekne-accent transition-colors line-clamp-3">
+                                    Chinese tech stocks could outperform the S&P 500 again
+                                </h3>
+                            </div>
+                            <a href="https://www.youtube.com/watch?v=oQ4wXzFB8zg&pp=ygUPYmVlbmVldCBrb3RoYXJp" target="_blank" class="absolute inset-0 z-20"></a>
+                        </div>
+
+                        <div class="reveal glass rounded-xl group overflow-hidden relative glow-card cursor-pointer flex flex-col aspect-[1/1]" style="transition-delay: 300ms">
+                            <div class="glow-effect"></div>
+                            <div class="relative z-10 w-full aspect-video bg-black/10">
+                                <img src="https://img.youtube.com/vi/k1Snq3uLURw/hqdefault.jpg" alt="Alpha-rich Companies" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-500">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-tekne-accent/90 rounded-full flex items-center justify-center text-white shadow-lg scale-90 group-hover:scale-100 transition-transform duration-300">
+                                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex-1 flex items-center p-4">
+                                <h3 class="text-black text-[10px] md:text-xs font-mono uppercase tracking-wide leading-tight group-hover:text-tekne-accent transition-colors line-clamp-3">
+                                    A huge sandbox of Alpha-rich companies
+                                </h3>
+                            </div>
+                            <a href="https://www.youtube.com/watch?v=k1Snq3uLURw&pp=ugMICgJpZBABGAHKBQ9iZWVuZWV0IGtvdGhhcmk%3D" target="_blank" class="absolute inset-0 z-20"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-press" class="w-full pt-8 reveal scroll-target scroll-mt-[130px]">
+                    <span class="font-mono text-tekne-accent text-xs tracking-widest block mb-6">RECENT PRESS</span>
+                    
+                    <div class="space-y-6">
+                        <a href="#" class="block group">
+                            <div class="glass p-6 rounded-xl hover:bg-white transition-all duration-300 border-l-2 border-transparent hover:border-tekne-accent">
+                                <div class="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
+                                    <h4 class="text-lg font-medium text-black group-hover:text-tekne-accent transition-colors">Bloomberg Markets: The China Tech Rebound</h4>
+                                    <span class="font-mono text-[10px] text-tekne-secondary mt-2 md:mt-0">OCT 14, 2024</span>
+                                </div>
+                                <p class="text-sm text-tekne-secondary font-light line-clamp-2">
+                                    Discussion on the shifting regulatory landscape in Asian markets and why valuation gaps between US and Emerging Market tech sectors are reaching historic extremes. Tekne Capital shares insights on key alpha drivers for the coming quarter.
+                                </p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="block group">
+                            <div class="glass p-6 rounded-xl hover:bg-white transition-all duration-300 border-l-2 border-transparent hover:border-tekne-accent">
+                                <div class="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
+                                    <h4 class="text-lg font-medium text-black group-hover:text-tekne-accent transition-colors">Institutional Investor: Global Macro Outlook</h4>
+                                    <span class="font-mono text-[10px] text-tekne-secondary mt-2 md:mt-0">SEP 02, 2024</span>
+                                </div>
+                                <p class="text-sm text-tekne-secondary font-light line-clamp-2">
+                                    An in-depth analysis of currency fluctuations and their impact on technology hardware manufacturing. How a concentrated portfolio approach yields better risk-adjusted returns in volatile interest rate environments.
+                                </p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="block group">
+                            <div class="glass p-6 rounded-xl hover:bg-white transition-all duration-300 border-l-2 border-transparent hover:border-tekne-accent">
+                                <div class="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
+                                    <h4 class="text-lg font-medium text-black group-hover:text-tekne-accent transition-colors">CNBC Squawk Box: The Future of Semiconductor Supply</h4>
+                                    <span class="font-mono text-[10px] text-tekne-secondary mt-2 md:mt-0">AUG 18, 2024</span>
+                                </div>
+                                <p class="text-sm text-tekne-secondary font-light line-clamp-2">
+                                    Addressing the long-term structural demand for high-performance computing and the role of emerging market fabrication centers. Tekne Capital outlines the thesis for a multi-year bull cycle in specialized components.
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content-thoughts" class="scroll-target scroll-mt-[130px]">
+                    <span class="font-mono text-tekne-accent text-xs tracking-widest block mb-6">OUR THOUGHTS</span>
+
+                    <div class="space-y-6 text-tekne-secondary font-light text-sm leading-relaxed opacity-80">
+                         <p>
+                            At Tekne, our research process is exhaustive. We believe that true understanding comes from boots-on-the-ground due diligence, not just spreadsheet modeling. Our team frequently travels to key technology hubs—from Shenzhen to Bangalore, from Taipei to Sao Paulo—meeting with suppliers, competitors, and customers to form a holistic view of the competitive landscape.
+                        </p>
+                        <p>
+                            This approach allows us to identify dislocations in market pricing before they become consensus. By focusing on the difference between a company's current market value and its long-term utility value, we construct a portfolio designed to compound capital efficiently over time, regardless of short-term market noise or macroeconomic headwinds.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="strategy" class="py-24 px-6 z-10 section-blur scroll-mt-0">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="sticky top-0 z-30 pt-28 pb-6 -mx-6 px-6 md:mx-0 md:px-0 bg-tekne-bg/80 backdrop-blur-xl transition-all duration-300 shadow-[0_10px_30px_-10px_rgba(250,250,250,1)]">
+                <div class="reveal">
+                    <span class="font-mono text-tekne-accent text-xs tracking-widest">APPROACH</span>
+                    <h2 class="text-4xl md:text-5xl font-light tracking-tight mt-4 mb-8">Core Focus & Mandate</h2>
+                    <p class="text-tekne-secondary font-light leading-relaxed text-lg max-w-3xl">
+                        By leveraging our global network and deep industry expertise, we identify high-conviction opportunities where the market underestimates the magnitude of future growth, allowing us to capture asymmetric returns over the long term.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-4 relative z-0 mt-8">
+                
+                <div class="reveal glass md:col-span-2 md:row-span-2 rounded-xl flex flex-col justify-end group overflow-hidden relative glow-card h-[536px]" id="symbiosis-container">
+                    <div class="absolute inset-0 z-0 opacity-100 pointer-events-auto overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#FAFAFA] z-10 pointer-events-none"></div>
+                        <canvas id="symbiosisCanvas" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="glow-effect"></div>
+                    <div class="relative z-20 px-8 pb-8 pointer-events-none"> 
+                        <i data-lucide="layers" class="w-8 h-8 text-black mb-6"></i>
+                        <h3 class="text-2xl font-light text-black">Our Fund</h3>
+                        <p class="mt-4 text-tekne-secondary text-sm leading-relaxed max-w-sm">
+                            Our flagship fund remains highly focused on owning a concentrated and diversified group of the leading non-US technology companies globally, where growth remains robust while public market valuations remain depressed.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal glass md:col-span-1 md:row-span-2 rounded-xl flex flex-col items-center justify-center text-center group overflow-hidden relative glow-card h-[536px]">
+                    <div class="glow-effect"></div>
+                    <div class="absolute inset-x-0 top-0 h-[70%] w-full pointer-events-none map-mask z-0">
+                        <div class="relative w-full h-full">
+                            <img src="image_548a46.png" class="absolute left-[0%] top-[20%] flex items-center justify-center opacity-30 filter invert" alt="World Map Pattern">
+                            <div class="absolute left-[28%] top-[33%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10 box-shadow-[0_0_8px_#FF7300]"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar"></div>
+                            </div>
+                            <div class="absolute left-[48%] top-[26%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar" style="animation-delay: 0.2s"></div>
+                            </div>
+                            <div class="absolute left-[56%] top-[32%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar" style="animation-delay: 0.5s"></div>
+                            </div>
+                            <div class="absolute left-[67%] top-[25%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar" style="animation-delay: 0.7s"></div>
+                            </div>
+                            <div class="absolute left-[70%] top-[42%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar" style="animation-delay: 1.0s"></div>
+                            </div>
+                            <div class="absolute left-[80%] top-[60%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar" style="animation-delay: 1.2s"></div>
+                            </div>
+                            <div class="absolute left-[83%] top-[43%] flex items-center justify-center">
+                                <div class="w-1 h-1 bg-tekne-accent rounded-full z-10"></div>
+                                <div class="absolute w-6 h-6 bg-tekne-accent/20 rounded-full animate-radar" style="animation-delay: 1.4s"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto relative z-10 flex flex-col items-center pb-8 px-4">
+                        <div class="w-16 h-16 rounded-full border border-black/10 flex items-center justify-center mb-6 animate-float bg-white/40 backdrop-blur-sm">
+                            <i data-lucide="globe" class="w-8 h-8 text-tekne-accent"></i>
+                        </div>
+                        <h3 class="text-2xl font-light text-black">Global Team</h3>
+                        <div class="w-full max-w-[100px] h-[1px] bg-black/10 my-4"></div>
+                        <p class="text-tekne-secondary text-sm leading-relaxed max-w-[200px]">Americas / EMEA / APAC presence ensuring timely research.</p>
+                    </div>
+                </div>
+
+                <div class="reveal glass md:col-span-1 md:row-span-2 rounded-xl group overflow-hidden relative glow-card h-[536px]">
+                    <div class="glow-effect"></div>
+
+                    <div class="absolute inset-0 z-0">
+                        <img src="beeneet1.png" alt="Beeneet Kothari" class="w-full h-full object-cover object-top opacity-95 grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 right-0 p-8 z-20 flex flex-col justify-end h-full">
+                         <h3 class="text-2xl font-medium text-white mb-1">Beeneet Kothari</h3>
+                         <p class="text-tekne-accent text-xs font-mono tracking-wider mb-6">Managing Director</p>
+                         <p class="text-white/80 text-sm leading-relaxed">
+                            Beeneet Kothari is the Managing Partner and Principal Portfolio Manager of Tekne Capital Management. Prior, he was a Managing Director at PointState Capital and Duquesne Capital, a global macro hedge fund founded by Stan Druckenmiller.
+                         </p>
+                    </div>
+                </div>
+
+                <div class="reveal glass p-6 rounded-xl flex flex-col justify-between group overflow-hidden relative glow-card h-[260px] md:col-span-1" id="quant-box">
+                    
+                    <canvas id="binaryCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-auto"></canvas>
+                    
+                    <div class="glow-effect"></div>
+                    
+                    <div class="relative z-10 flex flex-col h-full justify-between pointer-events-none">
+                        <i data-lucide="bar-chart-2" class="w-16 h-16 text-tekne-accent mb-6"></i>
+                        <div>
+                            <h3 class="text-2xl font-light text-black">Quantitative Rigor</h3>
+                            <p class="text-tekne-secondary text-sm leading-relaxed mt-4">
+                                Data-driven models complement our fundamental research, ensuring risk factors are monitored in real-time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal glass p-6 rounded-xl flex flex-col justify-between group overflow-hidden relative glow-card h-[260px] md:col-span-2">
+                    <div class="glow-effect"></div>
+                    <div class="flex justify-between items-start">
+                        <i data-lucide="shield-check" class="w-8 h-8 text-tekne-accent"></i>
+                        <span class="font-mono text-[10px] text-tekne-secondary tracking-widest">RISK MGT</span>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-light text-black">Capital Preservation</h3>
+                        <p class="text-tekne-secondary text-sm leading-relaxed max-w-lg mt-4">
+                            We employ hedging strategies using derivatives and options to protect the portfolio against extreme market volatility while maintaining upside exposure.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal glass p-6 rounded-xl flex flex-col justify-between group overflow-hidden relative glow-card h-[260px] md:col-span-1" id="speed-box">
+                    <canvas id="speedCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-auto"></canvas>
+                    <div class="glow-effect"></div>
+                    <div class="relative z-10 pointer-events-none flex flex-col h-full justify-between">
+                        <i data-lucide="zap" class="w-8 h-8 text-tekne-accent mb-6"></i>
+                        <div>
+                            <h3 class="text-2xl font-light text-black">Execution Speed</h3>
+                            <p class="text-tekne-secondary text-sm leading-relaxed mt-4">
+                                Agile decision making allows us to enter and exit positions efficiently across global exchanges.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal glass p-0 rounded-xl flex flex-col justify-center items-center text-center group overflow-hidden relative glow-card h-[260px] md:col-span-1" id="experience-box">
+                    <canvas id="experienceCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-auto"></canvas>
+                    <div class="glow-effect"></div>
+                    <div class="relative z-10 pointer-events-none transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-2">
+                        <h3 class="text-8xl md:text-9xl font-bold text-tekne-accent tracking-tighter leading-none relative">
+                            <span class="absolute inset-0 translate-x-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-pulse text-black/20" aria-hidden="true">15+</span>
+                            <span class="relative z-10 drop-shadow-2xl">15<span class="text-6xl md:text-7xl align-top ml-1">+</span></span>
+                        </h3>
+                        <p class="text-tekne-secondary text-[10px] md:text-xs font-mono tracking-[0.3em] mt-4 uppercase group-hover:text-black transition-colors duration-300">
+                            Years TMT Focus
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal glass p-6 rounded-xl flex flex-col justify-center items-center text-center group overflow-hidden relative glow-card h-[260px] md:col-span-3">
+                    <div class="glow-effect"></div>
+                    <div class="relative z-10 max-w-lg">
+                        <p class="text-black text-lg font-light italic leading-relaxed">
+                            "Innovation distinguishes between a leader and a follower."
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="min-h-screen flex flex-col justify-center py-32 px-6 relative z-10 section-blur scroll-mt-28">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="reveal font-mono text-tekne-accent text-xs tracking-widest">CONTACT</span>
+            <h2 class="reveal text-4xl md:text-5xl font-light tracking-tight mb-8 mt-4"></h2>
+            <div class="reveal glass p-12 rounded-2xl max-w-xl mx-auto text-left">
+                <div class="space-y-10">
+                    <div>
+                        <h3 class="text-2xl font-light text-black mb-3">Tekne Capital Management, LLC</h3>
+                        <p class="text-tekne-secondary font-light text-lg leading-relaxed">
+                            400 Madison Avenue<br>
+                            New York, NY 10017
+                        </p>
+                    </div>
+                    <div class="w-full h-[1px] bg-black/10"></div>
+                    <div>
+                        <h4 class="text-xs font-mono text-tekne-accent tracking-[0.2em] uppercase mb-6">Contact Us</h4>
+                        <div class="space-y-4 font-mono text-sm text-black">
+                            <div class="flex flex-col md:flex-row md:items-center">
+                                <span class="text-tekne-secondary w-24 text-xs uppercase tracking-wider mb-1 md:mb-0">Phone</span>
+                                <span>212-300-9530</span>
+                            </div>
+                            <div class="flex flex-col md:flex-row md:items-center">
+                                <span class="text-tekne-secondary w-24 text-xs uppercase tracking-wider mb-1 md:mb-0">Email</span>
+                                <a href="mailto:info@teknecap.com" class="hover:text-tekne-accent transition-colors border-b border-transparent hover:border-tekne-accent pb-0.5">
+                                    info@teknecap.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="fixed bottom-0 w-full py-8 px-6 border-t border-black/10 bg-white/80 backdrop-blur-md text-center md:text-left z-40">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-[10px] font-mono text-tekne-secondary uppercase tracking-wider">
+            <div class="mb-4 md:mb-0">
+                &copy; 2025 Tekne Capital Management, LLC.
+            </div>
+            <div class="flex space-x-6">
+                <a href="#" onclick="openDisclaimer(event)" class="hover:text-black transition-colors">Legal Disclaimer</a>
+                <a href="mailto:info@teknecap.com" class="hover:text-black transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="disclaimer-modal" class="hidden-modal fixed inset-0 z-[9999] flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-xl" onclick="closeDisclaimer()"></div>
+        
+        <canvas id="disclaimerRippleCanvas" class="absolute inset-0 w-full h-full pointer-events-auto cursor-pointer"></canvas>
+
+        <div class="modal-content relative z-10 max-w-2xl w-full max-h-[85vh] overflow-y-auto glass rounded-2xl p-8 md:p-12 border border-black/10 shadow-[0_0_50px_rgba(255,115,0,0.1)]">
+            
+            <div class="flex justify-between items-start mb-8">
+                <div>
+                    <span class="font-mono text-tekne-accent text-xs tracking-widest">// LEGAL</span>
+                    <h2 class="text-2xl md:text-3xl font-light text-black mt-2">Disclaimer</h2>
+                </div>
+                <button onclick="closeDisclaimer()" class="text-tekne-secondary hover:text-black transition-colors p-2">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6 text-sm text-tekne-secondary font-light leading-relaxed">
+                <p>The information contained herein is not an offer to sell or a solicitation of an offer to buy any security or to participate in any trading strategy.</p>
+                <p>Any such offer would only be made to qualified investors through a private offering memorandum or subscription agreement, which would contain material information regarding risks, fees, and other important disclosures.</p>
+                <p>Past performance is not indicative of future results. All investments involve risk, including the loss of principal. The views expressed herein represent the opinions of Tekne Capital Management as of the date of publication and are subject to change without notice.</p>
+                <p>This website is intended for informational purposes only and does not constitute investment advice. Tekne Capital Management is an investment adviser registered with the U.S. Securities and Exchange Commission.</p>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-black/10 flex justify-end">
+                <button onclick="closeDisclaimer()" class="px-6 py-2 bg-tekne-accent/10 hover:bg-tekne-accent text-tekne-accent hover:text-white rounded-full text-xs font-mono transition-all duration-300 border border-tekne-accent/20">
+                    ACKNOWLEDGE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. STANDARD SITE JS (Icons, Preloader, Menu) ---
+        lucide.createIcons();
+
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    initScrollAnimations();
+                    initHeroRippleSystem(); // Main Hero Physics
+                    initFocusEffect(); 
+                    initSymbiosisAnimation();
+                    initBinaryAnimation(); // Quant Rigor
+                    initSpeedAnimation(); // NEW EXECUTION SPEED ANIMATION WITH PHYSICS
+                    initExperienceAnimation(); // NEW 15+ ANIMATION
+                    initThesisNav(); 
+                }, 500);
+            }, 1500);
+        });
+
+        // --- NEW: EXPERIENCE BOX ANIMATION (Floating Plus Signs) ---
+        function initExperienceAnimation() {
+            const canvas = document.getElementById('experienceCanvas');
+            const container = document.getElementById('experience-box');
+            if (!canvas || !container) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            // Mouse State
+            const mouse = { x: -1000, y: -1000, active: false };
+
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                mouse.active = true;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.active = false;
+            });
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class PlusParticle {
+                constructor() {
+                    this.reset(true); // true = random start position
+                }
+
+                reset(randomStart = false) {
+                    this.x = Math.random() * width;
+                    this.y = randomStart ? Math.random() * height : height + 20;
+                    this.size = Math.random() * 10 + 4; // Size of the plus
+                    this.baseSpeed = Math.random() * 0.5 + 0.2;
+                    this.speedY = this.baseSpeed;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                    this.opacity = 0;
+                    this.targetOpacity = Math.random() * 0.3 + 0.1;
+                    this.color = Math.random() > 0.8 ? '#FF7300' : '#000000'; // Mix of Accent and Black
+                }
+
+                update() {
+                    // 1. Base Upward Movement
+                    this.y -= this.speedY;
+                    this.x += this.vx;
+                    this.rotation += this.rotationSpeed;
+
+                    // Fade In/Out logic
+                    if (this.y > height - 50 && this.opacity < this.targetOpacity) this.opacity += 0.01;
+                    if (this.y < 50 && this.opacity > 0) this.opacity -= 0.01;
+
+                    // Reset if off screen
+                    if (this.y < -20) this.reset();
+
+                    // 2. MOUSE INTERACTION (Magnetic Swirl)
+                    if (mouse.active) {
+                        const dx = mouse.x - this.x;
+                        const dy = mouse.y - this.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 120) {
+                            const angle = Math.atan2(dy, dx);
+                            const force = (120 - dist) / 120;
+                            
+                            // Push away slightly and spin faster
+                            this.x -= Math.cos(angle) * force * 2;
+                            this.y -= Math.sin(angle) * force * 2;
+                            this.rotation += force * 0.2;
+                            this.opacity = Math.min(1, this.opacity + force * 0.5); // Brighten on hover
+                        }
+                    }
+                }
+
+                draw(ctx) {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+                    ctx.globalAlpha = this.opacity;
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 1.5;
+
+                    // Draw Plus Sign
+                    const s = this.size / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(-s, 0);
+                    ctx.lineTo(s, 0);
+                    ctx.moveTo(0, -s);
+                    ctx.lineTo(0, s);
+                    ctx.stroke();
+
+                    ctx.restore();
+                }
+            }
+
+            // Create Particles
+            const particles = [];
+            const particleCount = 40;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new PlusParticle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw(ctx);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- NEW: EXECUTION SPEED ANIMATION (With Full Physics) ---
+        function initSpeedAnimation() {
+            const canvas = document.getElementById('speedCanvas');
+            const container = document.getElementById('speed-box');
+            if (!canvas || !container) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let obstacles = [];
+            
+            // Mouse Interaction State
+            const mouse = { x: -1000, y: -1000, active: false };
+            
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                mouse.active = true;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+                mouse.active = false;
+            });
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+
+                // Calculate obstacles (DOM elements) relative to canvas
+                obstacles = [];
+                // We target the icon, h3 title, and p description
+                const elements = container.querySelectorAll('i, h3, p');
+                elements.forEach(el => {
+                    const r = el.getBoundingClientRect();
+                    const boxR = container.getBoundingClientRect();
+                    obstacles.push({
+                        x: r.left - boxR.left - 4, // Slight padding for "bounce" feel
+                        y: r.top - boxR.top - 4,
+                        w: r.width + 8,
+                        h: r.height + 8
+                    });
+                });
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Ball {
+                constructor(color, x, y, vx, vy) {
+                    this.x = x; this.y = y;
+                    this.vx = vx; this.vy = vy;
+                    this.color = color;
+                    this.radius = 6;
+                    this.history = []; 
+                    this.historyTimer = 0;
+                    this.mass = 1;
+                }
+
+                update(otherBalls) {
+                    // Stopmotion Trail
+                    this.historyTimer++;
+                    if (this.historyTimer % 4 === 0) {
+                        this.history.push({ x: this.x, y: this.y });
+                        if (this.history.length > 8) this.history.shift();
+                    }
+
+                    // --- PHYSICS: MOUSE ATTRACTION ---
+                    if (mouse.active) {
+                        const dx = mouse.x - this.x;
+                        const dy = mouse.y - this.y;
+                        const angle = Math.atan2(dy, dx);
+                        const force = 0.8; 
+                        this.vx += Math.cos(angle) * force;
+                        this.vy += Math.sin(angle) * force;
+                        
+                        const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+                        const maxSpeed = 12; 
+                        if(speed > maxSpeed) {
+                             this.vx = (this.vx/speed) * maxSpeed;
+                             this.vy = (this.vy/speed) * maxSpeed;
+                        }
+                    } else {
+                        // Return to normal speed
+                         const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+                         const targetSpeed = 2.5; 
+                         if (speed > targetSpeed) { this.vx *= 0.96; this.vy *= 0.96; }
+                         else if (speed < targetSpeed) { this.vx *= 1.02; this.vy *= 1.02; }
+                    }
+
+                    // Apply Velocity
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    // --- PHYSICS: WALL COLLISIONS ---
+                    if (this.x < this.radius) { this.x = this.radius; this.vx *= -1; }
+                    if (this.x > width - this.radius) { this.x = width - this.radius; this.vx *= -1; }
+                    if (this.y < this.radius) { this.y = this.radius; this.vy *= -1; }
+                    if (this.y > height - this.radius) { this.y = height - this.radius; this.vy *= -1; }
+
+                    // --- PHYSICS: OBSTACLE COLLISIONS (Text/Icon) ---
+                    obstacles.forEach(rect => {
+                        // Find closest point on the rectangle to the circle center
+                        const closestX = Math.max(rect.x, Math.min(this.x, rect.x + rect.w));
+                        const closestY = Math.max(rect.y, Math.min(this.y, rect.y + rect.h));
+                        
+                        const dx = this.x - closestX;
+                        const dy = this.y - closestY;
+                        const distSq = dx * dx + dy * dy;
+
+                        if (distSq < this.radius * this.radius) {
+                            // Collision detected
+                            const dist = Math.sqrt(distSq);
+                            const overlap = this.radius - dist;
+                            
+                            // Normalize collision vector
+                            let nx = dx / dist;
+                            let ny = dy / dist;
+                            
+                            // If center is inside rect (rare but possible with high speed), push out
+                            if (dist === 0) { nx = 1; ny = 0; }
+
+                            // Separate
+                            this.x += nx * overlap;
+                            this.y += ny * overlap;
+
+                            // Reflect velocity
+                            // Simple box reflection: if mainly horizontal hit, flip X. mainly vertical, flip Y.
+                            // This feels better for text boxes than pure vector reflection
+                            if (Math.abs(nx) > Math.abs(ny)) {
+                                this.vx *= -1;
+                            } else {
+                                this.vy *= -1;
+                            }
+                        }
+                    });
+
+                    // --- PHYSICS: BALL-TO-BALL COLLISIONS ---
+                    otherBalls.forEach(ball2 => {
+                        if (ball2 === this) return; // Don't check against self
+
+                        const dx = ball2.x - this.x;
+                        const dy = ball2.y - this.y;
+                        const distSq = dx * dx + dy * dy;
+                        const minDist = this.radius + ball2.radius;
+
+                        if (distSq < minDist * minDist) {
+                            const dist = Math.sqrt(distSq);
+                            
+                            // 1. Resolve Overlap (prevent sticking)
+                            const overlap = (minDist - dist) / 2;
+                            const nx = dx / dist;
+                            const ny = dy / dist;
+                            
+                            this.x -= nx * overlap;
+                            this.y -= ny * overlap;
+                            ball2.x += nx * overlap;
+                            ball2.y += ny * overlap;
+
+                            // 2. Resolve Velocity (Elastic Collision)
+                            // Tangent vector
+                            const tx = -ny;
+                            const ty = nx;
+
+                            // Dot Product Tangent
+                            const dpTan1 = this.vx * tx + this.vy * ty;
+                            const dpTan2 = ball2.vx * tx + ball2.vy * ty;
+
+                            // Dot Product Normal
+                            const dpNorm1 = this.vx * nx + this.vy * ny;
+                            const dpNorm2 = ball2.vx * nx + ball2.vy * ny;
+
+                            // Conservation of momentum in 1D
+                            const m1 = (dpNorm1 * (this.mass - ball2.mass) + 2 * ball2.mass * dpNorm2) / (this.mass + ball2.mass);
+                            const m2 = (dpNorm2 * (ball2.mass - this.mass) + 2 * this.mass * dpNorm1) / (this.mass + ball2.mass);
+
+                            this.vx = tx * dpTan1 + nx * m1;
+                            this.vy = ty * dpTan1 + ny * m1;
+                            ball2.vx = tx * dpTan2 + nx * m2;
+                            ball2.vy = ty * dpTan2 + ny * m2;
+                        }
+                    });
+                }
+
+                draw(ctx) {
+                    // Draw Stopmotion Ghost Trail
+                    this.history.forEach((pos, index) => {
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = (index / this.history.length) * 0.25;
+                        ctx.fill();
+                    });
+
+                    // Draw Main Ball
+                    ctx.globalAlpha = 1;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    
+                    // Simple Shine
+                    ctx.beginPath();
+                    ctx.arc(this.x - 2, this.y - 2, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                    ctx.fill();
+                }
+            }
+
+            const balls = [
+                new Ball('#FF7300', width/4, height/2, 2, 1.5), 
+                new Ball('#555555', width*3/4, height/2, -1.5, -2) 
+            ];
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // We update balls, passing the full array so they can check against each other
+                // We use a simple trick to avoid double checking collision (only check i vs j where j > i)
+                // But inside the class, we just check all other balls. It's slightly inefficient (double check) 
+                // but fine for 2 balls.
+                
+                // However, to prevent double-resolving in the same frame which causes jitter:
+                // We should separate update logic? For 2 balls, let's just update sequentially.
+                // The overlap resolution pushes them apart immediately, so the second check fails. It works out.
+                
+                balls.forEach(ball => {
+                    ball.update(balls);
+                    ball.draw(ctx);
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- NEW: BINARY MATRIX ANIMATION (Quant Rigor) ---
+        function initBinaryAnimation() {
+            const canvas = document.getElementById('binaryCanvas');
+            const container = document.getElementById('quant-box');
+            if (!canvas || !container) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            // Configuration
+            const fontSize = 14; // Small binary text
+            const fontName = 'JetBrains Mono';
+            const color = '#FF7300'; // Tekne Accent
+            let columns, rows;
+            let grid = []; // Store values
+
+            // Mouse
+            const mouse = { x: -1000, y: -1000 };
+            
+            // Listeners
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            container.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+                
+                columns = Math.ceil(width / fontSize);
+                rows = Math.ceil(height / fontSize);
+                
+                // Initialize Grid
+                grid = [];
+                for (let y = 0; y < rows; y++) {
+                    let row = [];
+                    for (let x = 0; x < columns; x++) {
+                        row.push(Math.random() > 0.5 ? '1' : '0');
+                    }
+                    grid.push(row);
+                }
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = color;
+                ctx.font = `${fontSize}px "${fontName}"`;
+                ctx.textBaseline = 'top';
+
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < columns; x++) {
+                        const posX = x * fontSize;
+                        const posY = y * fontSize;
+
+                        // Mouse Interaction
+                        const dx = posX - mouse.x;
+                        const dy = posY - mouse.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        
+                        let char = grid[y][x];
+                        let alpha = 0.1; // Base opacity (subtle)
+
+                        if (dist < 80) {
+                            // Disrupt: Flip bit visually (simple flicker effect)
+                            if (Math.random() > 0.8) {
+                                char = char === '1' ? '0' : '1';
+                            }
+                            alpha = 1 - (dist / 80); // Brighten near mouse
+                            alpha = Math.max(0.15, alpha * 1); // Cap brightness to keep text readable
+                        }
+
+                        ctx.globalAlpha = alpha;
+                        ctx.fillText(char, posX, posY);
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        }
+
+        // --- NEW: SIDEBAR NAV LOGIC ---
+        function initThesisNav() {
+            const links = document.querySelectorAll('.sidebar-link');
+            const indicator = document.getElementById('sidebar-indicator');
+            const targets = document.querySelectorAll('.scroll-target');
+            
+            // Set initial position
+            if(links.length > 0 && indicator) {
+                indicator.style.top = links[0].offsetTop + 'px';
+            }
+
+            // ADJUSTED ROOT MARGIN for better accuracy when clicking vs scrolling
+            const observerOptions = {
+                root: null,
+                rootMargin: '-15% 0px -60% 0px', 
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        const activeLink = document.querySelector(`.sidebar-link[data-target="${id}"]`);
+                        
+                        // Update visual styles
+                        links.forEach(link => {
+                            link.classList.remove('active', 'text-black', 'font-medium');
+                            link.classList.add('text-tekne-secondary/50');
+                        });
+                        
+                        if(activeLink) {
+                            activeLink.classList.add('active', 'text-black', 'font-medium');
+                            activeLink.classList.remove('text-tekne-secondary/50');
+                            
+                            // Move indicator
+                            indicator.style.top = activeLink.offsetTop + 'px';
+                            indicator.style.height = activeLink.offsetHeight + 'px';
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            targets.forEach(target => observer.observe(target));
+        }
+
+
+        // --- 2. NEW PHYSICS-BASED SCATTER RIPPLE SYSTEM (HERO) ---
+        function initHeroRippleSystem() {
+            const canvas = document.getElementById('heroRippleCanvas');
+            const heroSection = document.getElementById('hero-section');
+            if (!canvas || !heroSection) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            // Load Globe Image
+            const globeImg = new Image();
+            globeImg.src = 'globe.jpg';
+            
+            // Mouse tracking
+            const mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: -1000, lastY: -1000 };
+            
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                
+                mouse.vx = mouse.x - mouse.lastX;
+                mouse.vy = mouse.y - mouse.lastY;
+                mouse.lastX = mouse.x;
+                mouse.lastY = mouse.y;
+            });
+            
+            heroSection.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            function resize() {
+                const rect = heroSection.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Single Particle
+            class RingParticle {
+                constructor(angle) {
+                    this.angle = angle;
+                    this.offsetX = 0;
+                    this.offsetY = 0;
+                    this.vx = 0;
+                    this.vy = 0;
+                }
+
+                update(centerX, centerY, ringRadius, mouse) {
+                    const idealX = centerX + Math.cos(this.angle) * ringRadius;
+                    const idealY = centerY + Math.sin(this.angle) * ringRadius;
+                    
+                    let currentX = idealX + this.offsetX;
+                    let currentY = idealY + this.offsetY;
+
+                    const dx = currentX - mouse.x;
+                    const dy = currentY - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const interactionRadius = 120;
+
+                    if (dist < interactionRadius) {
+                        const force = (interactionRadius - dist) / interactionRadius;
+                        const angleToMouse = Math.atan2(dy, dx);
+                        
+                        this.vx += Math.cos(angleToMouse) * force * 3 + (Math.random()-0.5);
+                        this.vy += Math.sin(angleToMouse) * force * 3 + (Math.random()-0.5);
+                    }
+
+                    this.offsetX += this.vx;
+                    this.offsetY += this.vy;
+
+                    this.vx *= 0.92; 
+                    this.vy *= 0.92;
+
+                    this.vx -= this.offsetX * 0.05;
+                    this.vy -= this.offsetY * 0.05;
+
+                    return { x: currentX, y: currentY };
+                }
+            }
+
+            // Ripple Manager
+            class Ripple {
+                constructor(delay = 0) {
+                    this.radius = 0;
+                    this.maxRadius = Math.max(width, height) * 0.8; 
+                    this.opacity = 1;
+                    this.speed = 4;
+                    this.delay = delay;
+                    this.active = false;
+                    
+                    this.particles = [];
+                    const particleCount = 450; 
+                    for(let i=0; i<particleCount; i++) {
+                        const angle = (i / particleCount) * Math.PI * 2;
+                        this.particles.push(new RingParticle(angle));
+                    }
+                }
+
+                reset() {
+                    this.radius = 0;
+                    this.opacity = 0.8;
+                    this.active = true;
+                    this.particles.forEach(p => {
+                        p.offsetX = 0; p.offsetY = 0;
+                        p.vx = 0; p.vy = 0;
+                    });
+                }
+
+                updateAndDrawMask(ctx, centerX, centerY, mouse) {
+                    if (this.delay > 0) {
+                        this.delay--;
+                        return;
+                    }
+                    if (!this.active) this.reset();
+
+                    this.radius += this.speed;
+                    this.opacity = 1 - (this.radius / this.maxRadius);
+
+                    if (this.opacity <= 0) {
+                        this.reset();
+                    }
+
+                    if (this.opacity > 0) {
+                        // In Light Mode, we mask with opaque color (black) so source-in works
+                        ctx.fillStyle = `rgba(0, 0, 0, ${this.opacity})`;
+                        
+                        ctx.beginPath();
+                        this.particles.forEach(p => {
+                            const pos = p.update(centerX, centerY, this.radius, mouse);
+                            ctx.moveTo(pos.x, pos.y);
+                            ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2); 
+                        });
+                        ctx.fill();
+                    }
+                }
+            }
+
+            const ripples = [
+                new Ripple(0),
+                new Ripple(45), 
+                new Ripple(90)
+            ];
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                const scrollOpacity = 1 - (window.scrollY / (height * 0.6));
+                
+                if (scrollOpacity > 0) {
+                    ctx.save();
+                    
+                    ctx.globalAlpha = scrollOpacity;
+                    ctx.shadowBlur = 40; 
+                    ctx.shadowColor = "rgba(0,0,0,0.2)"; // Shadow for depth
+                    
+                    ripples.forEach(r => {
+                        r.updateAndDrawMask(ctx, centerX, centerY, mouse);
+                    });
+
+                    // THIS IS THE KEY FIX FOR LIGHT MODE RIPPLES
+                    ctx.globalCompositeOperation = 'source-in';
+                    
+                    if (globeImg.complete && globeImg.naturalWidth > 0) {
+                        const scale = Math.max(width / globeImg.width, height / globeImg.height);
+                        const x = (width / 2) - (globeImg.width / 2) * scale;
+                        const y = (height / 2) - (globeImg.height / 2) * scale;
+                        
+                        // REMOVED FILTER: Colors will now show as original
+                        ctx.drawImage(globeImg, x, y, globeImg.width * scale, globeImg.height * scale);
+                    }
+                    
+                    ctx.restore();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // --- 3. 3D VECTOR SYMBIOSIS ANIMATION ---
+        function initSymbiosisAnimation() {
+            const canvas = document.getElementById('symbiosisCanvas');
+            const container = document.getElementById('symbiosis-container');
+            if (!canvas || !container) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Point3D {
+                constructor(x, y, z) {
+                    this.x = x; this.y = y; this.z = z;
+                }
+            }
+
+            const numPoints = 160;
+            const publicPath = []; 
+            const privatePath = []; 
+            
+            const publicSprings = Array.from({length: numPoints}, () => ({x:0, y:0, vx:0, vy:0}));
+            const privateSprings = Array.from({length: numPoints}, () => ({x:0, y:0, vx:0, vy:0}));
+
+            const indicesList = ["NASDAQ", "SGX", "HKEX", "TSE", "NSE", "B3", "LSE", "NYSE"];
+
+            let rotationX = 0;
+            let rotationY = 0;
+            let mouse = { x: -1000, y: -1000 };
+            
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            container.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+            function generatePaths(time) {
+                publicPath.length = 0; privatePath.length = 0;
+                const scale = Math.min(width, height) * 0.35;
+                for (let i = 0; i < numPoints; i++) {
+                    const t = (i / numPoints) * Math.PI * 2 + time * 0.2;
+                    const p = 2, q = 3, r = 0.4, R = 1;
+                    publicPath.push(new Point3D(
+                        scale * (R + r * Math.cos(q * t)) * Math.cos(p * t),
+                        scale * (R + r * Math.cos(q * t)) * Math.sin(p * t),
+                        scale * (r * Math.sin(q * t))
+                    ));
+                    const t2 = t * 1.5 + time * 0.5;
+                    privatePath.push(new Point3D(
+                        scale * 1.2 * Math.sin(5 * t2 + time * 0.1),
+                        scale * 1.2 * Math.sin(4 * t2),
+                        scale * 1.2 * Math.sin(3 * t2 + time * 0.2)
+                    ));
+                }
+            }
+
+            function project(p, cx, cy) {
+                const fov = 400;
+                const cosY = Math.cos(rotationY), sinY = Math.sin(rotationY);
+                const x1 = p.x * cosY - p.z * sinY, z1 = p.z * cosY + p.x * sinY;
+                const cosX = Math.cos(rotationX), sinX = Math.sin(rotationX);
+                const y2 = p.y * cosX - z1 * sinX, z2 = z1 * cosX + p.y * sinX;
+                const scale = fov / (fov + z2 + 400); 
+                return { x: cx + x1 * scale, y: cy + y2 * scale, z: z2 };
+            }
+
+            function updatePhysics(p, spring, mouseX, mouseY) {
+                const dx = p.x - mouseX, dy = p.y - mouseY;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                let targetX = 0, targetY = 0;
+                if (dist < 150) {
+                    const angle = Math.atan2(dy, dx);
+                    const push = ((150 - dist) / 150) ** 2 * 120; 
+                    targetX = Math.cos(angle) * push;
+                    targetY = Math.sin(angle) * push;
+                }
+                spring.vx = (spring.vx + (targetX - spring.x) * 0.05) * 0.9;
+                spring.vy = (spring.vy + (targetY - spring.y) * 0.05) * 0.9;
+                spring.x += spring.vx; spring.y += spring.vy;
+                p.x += spring.x; p.y += spring.y;
+            }
+
+            let time = 0;
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                // FIX FOR LIGHT MODE: Use Standard Blending, not lighter
+                ctx.globalCompositeOperation = 'source-over'; 
+                
+                // ADJUSTED VERTICAL CENTER (CY)
+                const cx = width / 2;
+                const cy = height * 0.35; // Moved up to 35% of height
+                
+                rotationY += 0.002; 
+                rotationX = Math.sin(time * 0.5) * 0.2; time += 0.01;
+                
+                generatePaths(time);
+                
+                const projPublic = publicPath.map(p => project(p, cx, cy));
+                const projPrivate = privatePath.map(p => project(p, cx, cy));
+                
+                for(let i=0; i<numPoints; i++) {
+                    updatePhysics(projPublic[i], publicSprings[i], mouse.x, mouse.y);
+                    updatePhysics(projPrivate[i], privateSprings[i], mouse.x, mouse.y);
+                }
+
+                // Draw Connections
+                ctx.lineWidth = 1;
+                for (let i = 0; i < projPublic.length; i += 2) {
+                    if (projPublic[i].z > -200) {
+                        for (let j = 0; j < projPrivate.length; j += 3) {
+                            const dx = projPublic[i].x - projPrivate[j].x;
+                            const dy = projPublic[i].y - projPrivate[j].y;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < 80) { 
+                                ctx.beginPath();
+                                ctx.strokeStyle = `rgba(255, 115, 0, ${(1 - dist / 80) * 0.4})`; 
+                                ctx.moveTo(projPublic[i].x, projPublic[i].y);
+                                ctx.lineTo(projPrivate[j].x, projPrivate[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+                
+                const drawPath = (path, color, width) => {
+                    ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
+                    path.forEach((p, i) => i===0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+                    ctx.closePath(); ctx.stroke();
+                };
+                
+                // Draw lines with Dark Grey for visibility on White
+                drawPath(projPublic, 'rgba(0, 0, 0, 0.15)', 1.5);
+                drawPath(projPrivate, 'rgba(255, 115, 0, 0.4)', 2);
+
+                ctx.font = "11px 'JetBrains Mono', monospace";
+                ctx.letterSpacing = "1px";
+                ctx.textAlign = "left";
+                
+                indicesList.forEach((indexName, i) => {
+                    const pointIndex = Math.floor((i / indicesList.length) * numPoints);
+                    const p = projPrivate[pointIndex];
+                    
+                    if (p.z > -300) {
+                        const opacity = Math.min(1, Math.max(0, (p.z + 500) / 600));
+                        ctx.fillStyle = `rgba(255, 115, 0, ${opacity})`;
+                        ctx.fillText(indexName, p.x + 10, p.y + 4);
+                        ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+                    }
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- 4. DISCLAIMER LIQUID RIPPLE SYSTEM (NEW) ---
+        let disclaimerAnimationId;
+        
+        function openDisclaimer(event) {
+            if(event) event.preventDefault();
+            const modal = document.getElementById('disclaimer-modal');
+            modal.classList.remove('hidden-modal');
+            initDisclaimerRippleSystem();
+        }
+
+        function closeDisclaimer() {
+            const modal = document.getElementById('disclaimer-modal');
+            modal.classList.add('hidden-modal');
+            if(disclaimerAnimationId) {
+                cancelAnimationFrame(disclaimerAnimationId);
+            }
+        }
+
+        function initDisclaimerRippleSystem() {
+            const canvas = document.getElementById('disclaimerRippleCanvas');
+            const modal = document.getElementById('disclaimer-modal');
+            if (!canvas || !modal) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            const mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: -1000, lastY: -1000 };
+            
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                
+                mouse.vx = mouse.x - mouse.lastX;
+                mouse.vy = mouse.y - mouse.lastY;
+                mouse.lastX = mouse.x;
+                mouse.lastY = mouse.y;
+            });
+
+            const contentBox = modal.querySelector('.modal-content');
+            contentBox.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect(); 
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                
+                mouse.vx = mouse.x - mouse.lastX;
+                mouse.vy = mouse.y - mouse.lastY;
+                mouse.lastX = mouse.x;
+                mouse.lastY = mouse.y;
+            });
+            
+            canvas.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class DiscRingParticle {
+                constructor(angle) {
+                    this.angle = angle;
+                    this.offsetX = 0;
+                    this.offsetY = 0;
+                    this.vx = 0;
+                    this.vy = 0;
+                }
+
+                update(centerX, centerY, ringRadius, mouse) {
+                    const idealX = centerX + Math.cos(this.angle) * ringRadius;
+                    const idealY = centerY + Math.sin(this.angle) * ringRadius;
+                    
+                    let currentX = idealX + this.offsetX;
+                    let currentY = idealY + this.offsetY;
+
+                    const dx = currentX - mouse.x;
+                    const dy = currentY - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const interactionRadius = 200; 
+
+                    if (dist < interactionRadius) {
+                        const force = (interactionRadius - dist) / interactionRadius;
+                        const angleToMouse = Math.atan2(dy, dx);
+                        
+                        this.vx += Math.cos(angleToMouse) * force * 2 + (Math.random()-0.5);
+                        this.vy += Math.sin(angleToMouse) * force * 2 + (Math.random()-0.5);
+                    }
+
+                    this.offsetX += this.vx;
+                    this.offsetY += this.vy;
+                    this.vx *= 0.95; 
+                    this.vy *= 0.95;
+                    this.vx -= this.offsetX * 0.02; 
+                    this.vy -= this.offsetY * 0.02;
+
+                    return { x: currentX, y: currentY };
+                }
+            }
+
+            class DiscRipple {
+                constructor(delay = 0) {
+                    this.radius = 0;
+                    this.maxRadius = Math.max(width, height); 
+                    this.opacity = 1;
+                    this.speed = 3; 
+                    this.delay = delay;
+                    this.active = false;
+                    this.particles = [];
+                    const particleCount = 300; 
+                    for(let i=0; i<particleCount; i++) {
+                        const angle = (i / particleCount) * Math.PI * 2;
+                        this.particles.push(new RingParticle(angle));
+                    }
+                }
+
+                reset() {
+                    this.radius = 0;
+                    this.active = true;
+                    this.particles.forEach(p => { p.offsetX = 0; p.offsetY = 0; p.vx = 0; p.vy = 0; });
+                }
+
+                draw(ctx, centerX, centerY, mouse) {
+                    if (this.delay > 0) { this.delay--; return; }
+                    if (!this.active) this.reset();
+
+                    this.radius += this.speed;
+                    this.opacity = (1 - (this.radius / this.maxRadius)) * 0.4; 
+
+                    if (this.opacity <= 0) this.reset();
+
+                    if (this.opacity > 0) {
+                        // FIXED: Swapped Orange for Black to match Light Theme
+                        ctx.strokeStyle = `rgba(0, 0, 0, ${this.opacity})`; 
+                        ctx.lineWidth = 2;
+                        
+                        ctx.beginPath();
+                        let firstPos = null;
+                        this.particles.forEach((p, i) => {
+                            const pos = p.update(centerX, centerY, this.radius, mouse);
+                            if(i===0) {
+                                firstPos = pos;
+                                ctx.moveTo(pos.x, pos.y);
+                            } else {
+                                ctx.lineTo(pos.x, pos.y);
+                            }
+                        });
+                        if(firstPos) ctx.lineTo(firstPos.x, firstPos.y);
+                        
+                        ctx.fillStyle = `rgba(0, 0, 0, ${this.opacity * 0.05})`;
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            const ripples = [
+                new DiscRipple(0),
+                new DiscRipple(60), 
+                new DiscRipple(120)
+            ];
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                ripples.forEach(r => {
+                    r.draw(ctx, centerX, centerY, mouse);
+                });
+
+                disclaimerAnimationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- 5. HELPER FUNCTIONS ---
+
+        document.querySelectorAll('.glow-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const glow = card.querySelector('.glow-effect');
+                if(glow) {
+                    glow.style.left = `${x}px`;
+                    glow.style.top = `${y}px`;
+                }
+            });
+        });
+
+        function initScrollAnimations() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); }
+                });
+            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+            reveals.forEach(element => observer.observe(element));
+        }
+
+        function initFocusEffect() {
+            const sections = document.querySelectorAll('.section-blur');
+            const focusOptions = { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 };
+            const focusObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('in-focus');
+                    else entry.target.classList.remove('in-focus');
+                });
+            }, focusOptions);
+            sections.forEach(section => focusObserver.observe(section));
+        }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const scrollY = window.scrollY;
+
+            // Nav Bar logic - Light Mode
+            if(nav) {
+                if (scrollY > 50) {
+                    nav.classList.add('bg-white/80', 'backdrop-blur-md', 'border-black/5', 'shadow-sm');
+                } else {
+                    nav.classList.remove('bg-white/80', 'backdrop-blur-md', 'border-black/5', 'shadow-sm');
+                }
+            }
+        });
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if(!menu) return;
+            menu.style.opacity = menu.style.opacity === '1' ? '0' : '1';
+            menu.style.pointerEvents = menu.style.pointerEvents === 'auto' ? 'none' : 'auto';
+        }
+    </script>
+</body>
+</html>
