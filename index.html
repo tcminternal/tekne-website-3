@@ -500,17 +500,27 @@
                     </div>
                 </div>
 
-                <div class="reveal glass p-6 rounded-xl flex flex-col justify-between group overflow-hidden relative glow-card h-[260px] md:col-span-2">
+                <div class="reveal glass p-0 rounded-xl flex flex-col justify-between group overflow-hidden relative glow-card h-[260px] md:col-span-2" id="capital-box">
+                    
+                    <img src="capital.jpg" alt="Capital Preservation" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-20 transition-opacity duration-700 grayscale mix-blend-multiply">
+                    
+                    <canvas id="capitalCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-auto"></canvas>
+                    
                     <div class="glow-effect"></div>
-                    <div class="flex justify-between items-start">
-                        <i data-lucide="shield-check" class="w-8 h-8 text-tekne-accent"></i>
-                        <span class="font-mono text-[10px] text-tekne-secondary tracking-widest">RISK MGT</span>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-light text-black">Capital Preservation</h3>
-                        <p class="text-tekne-secondary text-sm leading-relaxed max-w-lg mt-4">
-                            We employ hedging strategies using derivatives and options to protect the portfolio against extreme market volatility while maintaining upside exposure.
-                        </p>
+                    
+                    <div class="relative z-10 p-6 flex flex-col h-full justify-between pointer-events-none">
+                        <div class="flex justify-between items-start">
+                            <div class="w-10 h-10 rounded-full bg-tekne-accent/10 flex items-center justify-center text-tekne-accent group-hover:bg-tekne-accent group-hover:text-white transition-colors duration-500">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            </div>
+                            <span class="font-mono text-[10px] text-tekne-secondary tracking-widest bg-white/50 px-2 py-1 rounded"></span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-light text-black group-hover:translate-x-2 transition-transform duration-300">Capital Preservation</h3>
+                            <p class="text-tekne-secondary text-sm leading-relaxed max-w-lg mt-4 group-hover:text-black transition-colors">
+                                We employ hedging strategies using derivatives and options to protect the portfolio against extreme market volatility while maintaining upside exposure.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -542,12 +552,17 @@
                     </div>
                 </div>
 
-                <div class="reveal glass p-6 rounded-xl flex flex-col justify-center items-center text-center group overflow-hidden relative glow-card h-[260px] md:col-span-3">
-                    <div class="glow-effect"></div>
-                    <div class="relative z-10 max-w-lg">
-                        <p class="text-black text-lg font-light italic leading-relaxed">
+                <div class="reveal glass p-0 rounded-xl flex flex-col justify-center items-center text-center group overflow-hidden relative glow-card h-[260px] md:col-span-3" id="innovation-box">
+                    
+                    <img src="innovation.jpg" alt="Innovation" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-105 opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100">
+                    
+                    <canvas id="innovationCanvas" class="absolute inset-0 w-full h-full z-10 pointer-events-auto mix-blend-hard-light"></canvas>
+                    
+                    <div class="relative z-20 max-w-lg p-6 pointer-events-none">
+                        <p class="text-black text-2xl font-light italic leading-relaxed drop-shadow-lg group-hover:text-white transition-colors duration-500">
                             "Innovation distinguishes between a leader and a follower."
                         </p>
+                        <div class="w-12 h-[1px] bg-tekne-accent mx-auto mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                 </div>
 
@@ -555,8 +570,12 @@
         </div>
     </section>
 
-    <section id="contact" class="min-h-screen flex flex-col justify-center py-32 px-6 relative z-10 section-blur scroll-mt-28">
-        <div class="max-w-4xl mx-auto text-center">
+    <section id="contact" class="min-h-screen flex flex-col justify-center py-32 px-6 relative z-10 scroll-mt-28 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="contactworld.jpg" alt="World Contact" class="w-full h-full object-cover opacity-100">
+            <div class="absolute inset-0 bg-white/50 backdrop-blur-sm"></div> </div>
+
+        <div class="max-w-4xl mx-auto text-center relative z-10">
             <span class="reveal font-mono text-tekne-accent text-xs tracking-widest">CONTACT</span>
             <h2 class="reveal text-4xl md:text-5xl font-light tracking-tight mb-8 mt-4"></h2>
             <div class="reveal glass p-12 rounded-2xl max-w-xl mx-auto text-left">
@@ -650,6 +669,8 @@
                     initBinaryAnimation(); // Quant Rigor
                     initSpeedAnimation(); // NEW EXECUTION SPEED ANIMATION WITH PHYSICS
                     initExperienceAnimation(); // NEW 15+ ANIMATION
+                    initCapitalAnimation(); // NEW CAPITAL ANIMATION
+                    initInnovationAnimation(); // NEW INNOVATION ANIMATION
                     initThesisNav(); 
                 }, 500);
             }, 1500);
@@ -774,6 +795,216 @@
                     p.update();
                     p.draw(ctx);
                 });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- NEW: CAPITAL PRESERVATION (Shield Grid) ---
+        function initCapitalAnimation() {
+            const canvas = document.getElementById('capitalCanvas');
+            const container = document.getElementById('capital-box');
+            if (!canvas || !container) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            const mouse = { x: -1000, y: -1000 };
+
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            container.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Grid Nodes
+            const spacing = 30;
+            const rows = Math.ceil(height / spacing);
+            const cols = Math.ceil(width / spacing);
+            const nodes = [];
+
+            for(let y = 0; y <= rows; y++) {
+                for(let x = 0; x <= cols; x++) {
+                    nodes.push({
+                        baseX: x * spacing,
+                        baseY: y * spacing,
+                        x: x * spacing,
+                        y: y * spacing,
+                        vx: 0,
+                        vy: 0
+                    });
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // Update Nodes based on mouse
+                nodes.forEach(node => {
+                    const dx = mouse.x - node.x;
+                    const dy = mouse.y - node.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const forceRadius = 100;
+
+                    if(dist < forceRadius) {
+                        const force = (forceRadius - dist) / forceRadius;
+                        const angle = Math.atan2(dy, dx);
+                        const push = force * 20;
+                        
+                        // Push away from mouse (Shield effect)
+                        node.vx -= Math.cos(angle) * push * 0.1;
+                        node.vy -= Math.sin(angle) * push * 0.1;
+                    }
+
+                    // Spring back
+                    node.vx += (node.baseX - node.x) * 0.05;
+                    node.vy += (node.baseY - node.y) * 0.05;
+                    
+                    // Friction
+                    node.vx *= 0.85;
+                    node.vy *= 0.85;
+
+                    node.x += node.vx;
+                    node.y += node.vy;
+                });
+
+                // Draw Mesh
+                ctx.strokeStyle = 'rgba(0,0,0,0.08)'; // Subtle grey grid
+                ctx.beginPath();
+                
+                // Draw Horizontal lines
+                for(let y=0; y<=rows; y++) {
+                    for(let x=0; x<cols; x++) {
+                        const i = y * (cols + 1) + x;
+                        const next = i + 1;
+                        if(nodes[next]) {
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[next].x, nodes[next].y);
+                        }
+                    }
+                }
+                // Draw Vertical lines
+                for(let x=0; x<=cols; x++) {
+                    for(let y=0; y<rows; y++) {
+                        const i = y * (cols + 1) + x;
+                        const next = (y+1) * (cols + 1) + x;
+                        if(nodes[next]) {
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[next].x, nodes[next].y);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                // Draw "Active" Nodes near mouse
+                ctx.fillStyle = '#FF7300';
+                nodes.forEach(node => {
+                    const dx = mouse.x - node.x;
+                    const dy = mouse.y - node.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 100) {
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, 1.5, 0, Math.PI*2);
+                        ctx.globalAlpha = 1 - (dist/100);
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- NEW: INNOVATION (Particles & Connection) ---
+        function initInnovationAnimation() {
+            const canvas = document.getElementById('innovationCanvas');
+            const container = document.getElementById('innovation-box');
+            if (!canvas || !container) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            const mouse = { x: -1000, y: -1000 };
+
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            container.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+            function resize() {
+                const rect = container.getBoundingClientRect();
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particles = [];
+            for(let i=0; i<60; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 2 + 1
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // On the innovation box, we want to darken the non-hovered areas slightly
+                // creating a spotlight effect where the mouse is
+                
+                // 1. Draw connecting lines near mouse
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                
+                particles.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    // Bounce
+                    if(p.x < 0 || p.x > width) p.vx *= -1;
+                    if(p.y < 0 || p.y > height) p.vy *= -1;
+
+                    // Mouse Interaction (Attraction - "Follower")
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if(dist < 150) {
+                        p.x += dx * 0.01;
+                        p.y += dy * 0.01;
+                        
+                        // Draw line to mouse
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+
+                    // Draw Particle
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                    ctx.fill();
+                });
+
                 requestAnimationFrame(animate);
             }
             animate();
